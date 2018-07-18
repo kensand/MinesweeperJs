@@ -34,8 +34,7 @@ function game(){
     width = document.getElementById("width").value;
     height = document.getElementById("height").value;
     mines = document.getElementById("mines").value;
-    document.getElementById("container").style.width = 24 * width;
-    document.getElementById("container").style.height = 24 * height;
+    
     clicked = new Array(0);
     board = new Array(0);
     for(var i = 0; i < height; i++){
@@ -58,6 +57,13 @@ function game(){
 	document.getElementById("container").appendChild(rowelem);
 
     }
+    var container = document.getElementById("container");
+    container.style.minWidth = 24 * width + "px";
+    container.style.minHeight = 24 * height + "px";
+    container.style.maxWidth = 24 * width + "px";
+    container.style.maxHeight = 24 * height + "px";
+    container.style.width = 24 * width + "px";
+    container.style.height = 24 * height + "px";
     for(var i = 0; i < mines; i++){
 	var randx = Math.floor(Math.random() * width);
 	var randy = Math.floor(Math.random() * height);
