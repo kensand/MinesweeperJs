@@ -16,7 +16,11 @@ var height = 20;
 var mines = 25;
 var started = "false";
 var uncovered = 0;
+
+//Setup the game itself.
 function game(){
+
+    //set gamestate	
     if(started == "false"){
 	started = "true";
     }
@@ -24,6 +28,7 @@ function game(){
 	return;
     }
     else if(started == "over"){
+	//if it's over delete the old board
 	uncovered = 0;
 	var myNode = document.getElementById("container");
 	while (myNode.firstChild) {
@@ -31,12 +36,17 @@ function game(){
 	}
 	started = "true";
     }
+
+    //get game attributes
     width = document.getElementById("width").value;
     height = document.getElementById("height").value;
     mines = document.getElementById("mines").value;
     
+    //make lists for square states (will hold array of arrays representing each square)
     clicked = new Array(0);
     board = new Array(0);
+
+    //create div elements for squares and fill state arrays
     for(var i = 0; i < height; i++){
 	var row = new Array(0);
 	var rowelem = document.createElement("div");
@@ -45,8 +55,11 @@ function game(){
 	for(var j = 0; j < width; j++){
 	    var elem = document.createElement("div");
 	    elem.className = "square";
+	    //set square onclick and onrightclicks
 	    elem.onclick = processClick;
 	    elem.oncontextmenu=rightClick;
+	    
+	    //sets square ids to their locations, so that we can find where each square is when it's clicked.
 	    elem.setAttribute("id", i.toString() + "," + j.toString());
 	    rowelem.appendChild(elem);
 	    clickedrow.push("not_clicked");
@@ -57,6 +70,7 @@ function game(){
 	document.getElementById("container").appendChild(rowelem);
 
     }
+    //setup sizing of container to fit squares
     var container = document.getElementById("container");
     container.style.minWidth = 24 * width + "px";
     container.style.minHeight = 24 * height + "px";
@@ -64,6 +78,8 @@ function game(){
     container.style.maxHeight = 24 * height + "px";
     container.style.width = 24 * width + "px";
     container.style.height = 24 * height + "px";
+
+    //generate random mine locations	
     for(var i = 0; i < mines; i++){
 	var randx = Math.floor(Math.random() * width);
 	var randy = Math.floor(Math.random() * height);
@@ -75,6 +91,8 @@ function game(){
 	}
     }
 }
+
+//The onrightclick function - cycles between flag, question mark, and nothing.
 function rightClick(){
     if(started == "over"){
 	console.log("rightclick returning because started == over");
@@ -111,6 +129,8 @@ function rightClick(){
     }
     return false;
 }
+
+//function that processes a left click on a square.
 function processClick(){
     if(started == "over"){
         return;
@@ -141,6 +161,7 @@ function processClick(){
 	    else if(count != 0){
 		clicked[r-1][c] = "clicked";
 		document.getElementById((r-1).toString() + "," + c.toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById((r-1).toString() + "," + c.toString()).style.backgroundColor = "white";
 	    }
 	    else{
 		document.getElementById((r-1).toString() + "," + c.toString()).style.backgroundColor = "green";
@@ -158,6 +179,7 @@ function processClick(){
 	    else if(count != 0){
 		clicked[r-1][c-1] = "clicked";
                 document.getElementById((r-1).toString() + "," + (c-1).toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById((r-1).toString() + "," + (c-1).toString()).style.backgroundColor = "white";
             }
             else{
                 document.getElementById((r-1).toString() + "," + (c-1).toString()).style.backgroundColor = "green";
@@ -175,6 +197,7 @@ function processClick(){
             }
 	    else if(count != 0){
                 document.getElementById(r.toString() + "," + (c-1).toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById(r.toString() + "," + (c-1).toString()).style.backgroundColor = "white";
 		clicked[r][c-1] = "clicked";
 
 	    }
@@ -193,6 +216,7 @@ function processClick(){
             }
             else if(count != 0){
                 document.getElementById((r+1).toString() + "," + (c-1).toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById((r+1).toString() + "," + (c-1).toString()).style.backgroundColor = "white";
 		clicked[r+1][c-1] = "clicked";
 
 	    }
@@ -211,6 +235,7 @@ function processClick(){
             }
 	    else if(count != 0){
 		document.getElementById((r+1).toString() + "," + c.toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById((r+1).toString() + "," + c.toString()).style.backgroundColor = "white";
 		clicked[r+1][c] = "clicked";
 
 	    }
@@ -229,6 +254,7 @@ function processClick(){
             }
 	    else if(count != 0){
 		document.getElementById((r+1).toString() + "," + (c+1).toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById((r+1).toString() + "," + (c+1).toString()).style.backgroundColor = "white";
 		clicked[r+1][c+1] = "clicked";
 	    }
             else{
@@ -246,6 +272,7 @@ function processClick(){
 	    }
             else if(count != 0){
                 document.getElementById(r.toString() + "," + (c+1).toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById(r.toString() + "," + (c+1).toString()).style.backgroundColor = "white";
 		clicked[r][c+1] = "clicked";
 
 	    }
@@ -265,6 +292,7 @@ function processClick(){
 	    }
             else if(count != 0){
                 document.getElementById((r-1).toString() + "," + (c+1).toString()).innerHTML = "<p>" + count.toString() + "</p>";
+		document.getElementById((r-1).toString() + "," + (c+1).toString()).style.backgroundColor = "white";
 		clicked[r-1][c+1] = "clicked";
 
 	    }
@@ -287,6 +315,7 @@ function processClick(){
 	var count = getCount(r,c);
 	if(count > 0){
             this.innerHTML = "<p>" + count.toString() + "</p>";
+	    this.style.backgroundColor = "white"
 	    clicked[r][c] = "clicked";
 	    uncovered++;
 	    gameEnd();
@@ -302,6 +331,7 @@ function processClick(){
     }
 }
 
+//function that is called if a mine is clicked
 function gameLost(){
     for(i = 0; i < height; i++){
         for(j = 0; j < width; j++){
@@ -315,6 +345,7 @@ function gameLost(){
     console.log("GAME OVER");
 }
 
+//function that is called when all squares without mines are cleared
 function gameEnd(){
     if(uncovered == (width * height - mines)){
 	alert("You win!");
@@ -323,6 +354,8 @@ function gameEnd(){
     return;
 }
 
+//recursive clear that is called if a square with no adjacent mines is cleared
+//effectively "clicks" all adjacent squares, since they are known to be mine free.
 function recurseClear(r,c){
     if(r < 0 || c < 0 || r >= height || c >= width || clicked[r][c] == "clicked"){
 	console.log("recursion returning");
@@ -333,8 +366,9 @@ function recurseClear(r,c){
     uncovered++;
     gameEnd();
 //    console.log("uncovered = " + uncovered.toString() + ", total to uncover: " + (width * height - mines).toString());
-    if(count != 0){
+    if(count > 0){
 	document.getElementById(r.toString() + "," + c.toString()).innerHTML = "<p>" + count.toString() + "</p>";
+	document.getElementById(r.toString() + "," + c.toString()).style.backgroundColor = "white";
 	return;
     }
     else{
@@ -369,6 +403,7 @@ function recurseClear(r,c){
    }
 }
 
+//gets the count of adjacent mines given the location of a square
 function getCount(r,c){
     var count = 0; 
     if(r - 1 >= 0){
